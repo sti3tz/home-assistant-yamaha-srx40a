@@ -1,0 +1,47 @@
+# Example for configuration.yaml
+# Replace 192.168.1.100 with the IP address of your Yamaha SR-X40A.
+
+shell_command:
+  yamaha_set_volume: >-
+    curl -s 'http://192.168.1.100:49152/upnp/control/rendercontrol1'
+    -H 'Content-Type: text/xml; charset="utf-8"'
+    -H 'SOAPAction: "urn:schemas-upnp-org:service:RenderingControl:1#SetVolume"'
+    -d '<?xml version="1.0" encoding="utf-8"?><s:Envelope s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><u:SetVolume xmlns:u="urn:schemas-upnp-org:service:RenderingControl:1"><InstanceID>0</InstanceID><Channel>Single</Channel><DesiredVolume>{{ volume }}</DesiredVolume></u:SetVolume></s:Body></s:Envelope>'
+
+  yamaha_mute_on: >-
+    curl -s 'http://192.168.1.100:49152/upnp/control/rendercontrol1'
+    -H 'Content-Type: text/xml; charset="utf-8"'
+    -H 'SOAPAction: "urn:schemas-upnp-org:service:RenderingControl:1#SetMute"'
+    -d '<?xml version="1.0" encoding="utf-8"?><s:Envelope s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><u:SetMute xmlns:u="urn:schemas-upnp-org:service:RenderingControl:1"><InstanceID>0</InstanceID><Channel>Single</Channel><DesiredMute>1</DesiredMute></u:SetMute></s:Body></s:Envelope>'
+
+  yamaha_mute_off: >-
+    curl -s 'http://192.168.1.100:49152/upnp/control/rendercontrol1'
+    -H 'Content-Type: text/xml; charset="utf-8"'
+    -H 'SOAPAction: "urn:schemas-upnp-org:service:RenderingControl:1#SetMute"'
+    -d '<?xml version="1.0" encoding="utf-8"?><s:Envelope s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><u:SetMute xmlns:u="urn:schemas-upnp-org:service:RenderingControl:1"><InstanceID>0</InstanceID><Channel>Single</Channel><DesiredMute>0</DesiredMute></u:SetMute></s:Body></s:Envelope>'
+
+command_line:
+  - sensor:
+      name: Yamaha Volume
+      unique_id: yamaha_srx40a_volume
+      command: >-
+        curl -s 'http://192.168.1.100:49152/upnp/control/rendercontrol1'
+        -H 'Content-Type: text/xml; charset="utf-8"'
+        -H 'SOAPAction: "urn:schemas-upnp-org:service:RenderingControl:1#GetVolume"'
+        -d '<?xml version="1.0" encoding="utf-8"?><s:Envelope s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><u:GetVolume xmlns:u="urn:schemas-upnp-org:service:RenderingControl:1"><InstanceID>0</InstanceID><Channel>Single</Channel></u:GetVolume></s:Body></s:Envelope>'
+      value_template: >-
+        {{ value | regex_findall_index('<CurrentVolume>([0-9]+)</CurrentVolume>') }}
+      unit_of_measurement: "%"
+      scan_interval: 10
+
+  - sensor:
+      name: Yamaha Mute Status
+      unique_id: yamaha_srx40a_mute
+      command: >-
+        curl -s 'http://192.168.1.100:49152/upnp/control/rendercontrol1'
+        -H 'Content-Type: text/xml; charset="utf-8"'
+        -H 'SOAPAction: "urn:schemas-upnp-org:service:RenderingControl:1#GetMute"'
+        -d '<?xml version="1.0" encoding="utf-8"?><s:Envelope s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><u:GetMute xmlns:u="urn:schemas-upnp-org:service:RenderingControl:1"><InstanceID>0</InstanceID><Channel>Single</Channel></u:GetMute></s:Body></s:Envelope>'
+      value_template: >-
+        {{ value | regex_findall_index('<CurrentMute>([01])</CurrentMute>') }}
+      scan_interval: 10
