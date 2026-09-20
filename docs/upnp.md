@@ -54,4 +54,23 @@ A Linkplay-style HTTPS endpoint was observed during testing, but the TLS server 
 
 ## Other services
 
-AVTransport is also advertised by the device. Power, input/source selection and sound modes have not yet been verified and are intentionally not implemented until working commands are confirmed.
+AVTransport is also advertised by the device.
+
+## DeviceManager events
+
+The tested device advertises:
+
+```text
+Service:  urn:schemas-linkplay-com:service:DeviceManager:1
+Control:  /upnp/control/DeviceManager1
+Events:   /upnp/event/DeviceManager1
+```
+
+Its `LastChange` state variable is event-enabled. A standard UPnP `SUBSCRIBE`
+request produced `NOTIFY` callbacks containing reproducible Standby and On
+transitions. See [power-events.md](power-events.md) for the captured mapping.
+
+Input/source selection and sound modes have not yet been verified and are
+intentionally not implemented until working commands are confirmed. No guessed
+`SetAvsProperty`, power, shutdown, reboot, OTA, or firmware payloads should be
+used.

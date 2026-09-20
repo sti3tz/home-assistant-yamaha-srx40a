@@ -14,7 +14,8 @@ This project documents a working alternative for devices where integrations rely
 | Get mute state | Tested |
 | Mute | Tested |
 | Unmute | Tested |
-| Power / Standby | Under investigation |
+| Power / Standby status | Tested via DeviceManager events |
+| Power / Standby control | Under investigation |
 | Input / Source | Under investigation |
 | Sound modes | Under investigation |
 
@@ -78,11 +79,15 @@ urn:schemas-upnp-org:service:RenderingControl:1
 
 The SR-X40A tested here uses the RenderingControl channel **`Single`**, not `Master`.
 
-See [docs/upnp.md](docs/upnp.md) for details and [docs/tested-functions.md](docs/tested-functions.md) for the current verification status.
+See [docs/upnp.md](docs/upnp.md) for protocol details,
+[docs/power-events.md](docs/power-events.md) for the verified power-state event
+mapping, and [docs/tested-functions.md](docs/tested-functions.md) for the current
+verification status.
 
 ## Roadmap
 
-- Verify power / standby control
+- Implement the verified DeviceManager power-state events in a native integration
+- Verify power / standby control without guessing undocumented payloads
 - Verify input / source selection
 - Verify sound modes
 - Develop a native Home Assistant custom integration with a single `media_player` entity
